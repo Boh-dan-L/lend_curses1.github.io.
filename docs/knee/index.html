@@ -28,6 +28,127 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 }(window, document, 'ttq');
 </script>
 <!-- TikTok Pixel Code End -->
+ <script>
+  window.APP_CONFIG = {
+    landing_id: "knee",
+    pixel_key: "pixel_knee"
+  };
+</script>
+<script>
+(function () {
+  const API_URL = "https://bayer-1078313683185.europe-west1.run.app";
+  const buttons = document.querySelectorAll(".pay-btn");
+
+  if (!buttons.length) return;
+
+  function uuidv4() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function getLS(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", async function (e) {
+      e.preventDefault();
+
+      const eventId = uuidv4();
+
+      const payload = {
+        event_id: eventId,
+        landing_id: window.APP_CONFIG?.landing_id || null,
+        pixel_key: window.APP_CONFIG?.pixel_key || null,
+        product_id: btn.dataset.productId,
+        attribution: {
+          external_id: getLS("meta_external_id"),
+          fbp: getLS("meta_fbp"),
+          fbclid: getLS("meta_last_fbclid") || getLS("meta_first_fbclid"),
+          utm_source: getLS("meta_last_utm_source"),
+          utm_medium: getLS("meta_last_utm_medium"),
+          utm_campaign: getLS("meta_last_utm_campaign"),
+          utm_adset: getLS("meta_last_utm_adset"),
+          utm_content: getLS("meta_last_utm_content"),
+          utm_term: getLS("meta_last_utm_term"),
+          first_seen_at: getLS("meta_first_seen_at")
+        }
+      };
+
+      try {
+        btn.style.pointerEvents = "none";
+        btn.style.opacity = "0.7";
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "initiate_checkout",
+          event_id: eventId,
+          product_id: btn.dataset.productId
+        });
+
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.ok || !data.payment) {
+          throw new Error(data.error || "Не вдалося створити оплату");
+        }
+
+        localStorage.setItem("last_order_reference", data.orderReference || "");
+        localStorage.setItem("last_event_id", eventId);
+
+        const payment = data.payment;
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://secure.wayforpay.com/pay";
+
+        Object.keys(payment).forEach(function (key) {
+          const value = payment[key];
+
+          if (Array.isArray(value)) {
+            value.forEach(function (item) {
+              const input = document.createElement("input");
+              input.type = "hidden";
+              input.name = key + "[]";
+              input.value = item;
+              form.appendChild(input);
+            });
+          } else {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+          }
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+
+      } catch (error) {
+        console.error("Помилка create-order/payment:", error);
+        btn.style.pointerEvents = "";
+        btn.style.opacity = "";
+        alert("Не вдалося створити оплату. Спробуй ще раз.");
+      }
+    });
+  });
+})();
+</script>
 </head>
 <body data-landing="knee">
   <!-- Google Tag Manager (noscript) -->
@@ -624,7 +745,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
           <div class="pricing__actions">
             <a id="main-cta" class="btn btn--primary pricing__btn"
-              href="https://secure.wayforpay.com/button/b580b218acc2f">
+              data-product-id="knee_390"
+              href="/">
               Придбати курс
             </a>
             <a class="pricing__sub" href="#" data-scroll-to="#knee-assess">Пройти короткий тест</a>
@@ -670,7 +792,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
           <div class="pricing__actions">
             <a id="main-cta" class="btn btn--primary pricing__btn"
-              href="https://secure.wayforpay.com/button/bfef9d3512597">
+              data-product-id="knee_890"
+              href="/">
               Взяти курс + розбір
             </a>
             <p class="pricing__note">* Кількість розборів обмежена</p>
@@ -941,6 +1064,5 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </a>
 <script src="../shared/js/base.js"></script>
 <script src="./knee.js"></script>
-
 </body>
 </html>
