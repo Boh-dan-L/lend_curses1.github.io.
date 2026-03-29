@@ -3,23 +3,61 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bogdan Rehab — Лендінги</title>
-  <link rel="stylesheet" href="./shared/css/base.css" />
+  <title>Bogdan Rehab — Курси відновлення</title>
+  <meta name="description" content="Оберіть зону болю та перейдіть до потрібного курсу відновлення Bogdan Rehab." />
+  <link rel="stylesheet" href="./shared/css/base1.css" />
 </head>
 <body>
-  <header class="site-header">
-    <button class="burger" aria-label="Відкрити меню"><span></span><span></span><span></span></button>
-    <a class="logo" href="#"><img src="./shared/img/logo.png" alt="Bogdan Rehab"></a>
-  </header>
-  <main class="container" style="padding:32px 0">
-    <h1>Каталог лендінгів</h1>
-    <ul>
-      <li><a href="/foot/">Лендинг: Стопа</a></li>
-      <li><a href="/knee/">Лендинг: Коліно</a></li>
-    </ul>
-    <p>Цей хаб не обов’язковий — можна зробити редірект на один із лендінгів.</p>
-  </main>
-  <footer class="footer">© Bogdan Rehab</footer>
-  <script src="./shared/js/base.js"></script>
+  <div class="page-shell">
+    <header class="site-header container">
+      <a class="logo" href="#hero" aria-label="Bogdan Rehab — на головну">
+        <span class="logo-mark">BR</span>
+        <span class="logo-text">
+          <strong>Bogdan Rehab</strong>
+          <small>онлайн курси відновлення</small>
+        </span>
+      </a>
+    </header>
+
+    <main>
+      <section class="hero container" id="hero">
+        <div class="hero__content">
+          <span class="eyebrow">Зручний вибір курсу</span>
+          <h1>Оберіть зону болю та перейдіть до потрібної програми відновлення</h1>
+          <p class="hero__lead">
+            Тут зібрані курси Bogdan Rehab для різних зон тіла. Натисніть на позначену ділянку на зображенні
+            або виберіть курс зі списку нижче.
+          </p>
+
+          <!-- <div class="hero__note">
+            <span class="hero__note-dot"></span>
+            <p>Червоні зони на тілі — це активні посилання.</p>
+          </div> -->
+
+          <nav class="course-links" aria-label="Список курсів">
+            <a class="course-card" href="/knee/">
+              <span class="course-card__title">Коліно</span>
+              <span class="course-card__desc">Біль, нестабільність, відновлення функції</span>
+            </a>
+            <a class="course-card" href="/foot/">
+              <span class="course-card__title">Стопа</span>
+              <span class="course-card__desc">П'ята, склепіння, перенавантаження стопи</span>
+            </a>
+            <a class="course-card" href="/neck/">
+              <span class="course-card__title">Шия</span>
+              <span class="course-card__desc">Напруження, скутість, біль у шийному відділі</span>
+            </a>
+            <a class="course-card" href="/consultation/">
+              <span class="course-card__title">Консультація</span>
+              <span class="course-card__desc">Індивідуальний розбір симптомів та план дій</span>
+            </a>
+          </nav>
+        </div>
+    </main>
+
+    <footer class="footer container">
+      <p>© Bogdan Rehab</p>
+    </footer>
+  </div>
 </body>
 </html>
