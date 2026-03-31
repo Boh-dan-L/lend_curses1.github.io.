@@ -26,6 +26,257 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 }(window, document, 'ttq');
 </script>
 <!-- TikTok Pixel Code End -->
+<script>
+  window.APP_CONFIG = {
+    landing_id: "foot",
+    pixel_key: "pixel_foot"
+  };
+</script>
+
+<script>
+(function () {
+  function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  }
+
+  function uuidv4() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function getLS(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setLS(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {}
+  }
+
+  function saveIfExists(key, value) {
+    if (value !== null && value !== undefined && value !== "") {
+      setLS(key, value);
+    }
+  }
+
+  function ensureExternalId() {
+    let id = getLS("meta_external_id");
+    if (!id) {
+      id = uuidv4();
+      setLS("meta_external_id", id);
+    }
+    return id;
+  }
+
+  const utm = {
+    utm_source: getParam("utm_source"),
+    utm_medium: getParam("utm_medium"),
+    utm_campaign: getParam("utm_campaign"),
+    utm_adset: getParam("utm_adset"),
+    utm_content: getParam("utm_content"),
+    utm_term: getParam("utm_term")
+  };
+
+  const fbclid = getParam("fbclid");
+  const fbp = getCookie("_fbp");
+  const nowTs = String(Math.floor(Date.now() / 1000));
+
+  ensureExternalId();
+  saveIfExists("meta_fbp", fbp);
+
+  const hasAttributionInUrl =
+    Object.values(utm).some(Boolean) || !!fbclid;
+
+  // FIRST TOUCH
+  if (!getLS("meta_first_seen_at") && hasAttributionInUrl) {
+    setLS("meta_first_seen_at", nowTs);
+
+    saveIfExists("meta_first_utm_source", utm.utm_source);
+    saveIfExists("meta_first_utm_medium", utm.utm_medium);
+    saveIfExists("meta_first_utm_campaign", utm.utm_campaign);
+    saveIfExists("meta_first_utm_adset", utm.utm_adset);
+    saveIfExists("meta_first_utm_content", utm.utm_content);
+    saveIfExists("meta_first_utm_term", utm.utm_term);
+    saveIfExists("meta_first_fbclid", fbclid);
+  }
+
+  // Якщо first_seen_at ще нема взагалі — створи хоча б базовий timestamp
+  if (!getLS("meta_first_seen_at")) {
+    setLS("meta_first_seen_at", nowTs);
+  }
+
+  // LAST TOUCH
+  if (hasAttributionInUrl) {
+    setLS("meta_last_seen_at", nowTs);
+
+    saveIfExists("meta_last_utm_source", utm.utm_source);
+    saveIfExists("meta_last_utm_medium", utm.utm_medium);
+    saveIfExists("meta_last_utm_campaign", utm.utm_campaign);
+    saveIfExists("meta_last_utm_adset", utm.utm_adset);
+    saveIfExists("meta_last_utm_content", utm.utm_content);
+    saveIfExists("meta_last_utm_term", utm.utm_term);
+    saveIfExists("meta_last_fbclid", fbclid);
+  }
+
+  console.log("ATTR INIT", {
+    external_id: getLS("meta_external_id"),
+    fbp: getLS("meta_fbp"),
+
+    first: {
+      seen_at: getLS("meta_first_seen_at"),
+      fbclid: getLS("meta_first_fbclid"),
+      utm_source: getLS("meta_first_utm_source"),
+      utm_medium: getLS("meta_first_utm_medium"),
+      utm_campaign: getLS("meta_first_utm_campaign"),
+      utm_adset: getLS("meta_first_utm_adset"),
+      utm_content: getLS("meta_first_utm_content"),
+      utm_term: getLS("meta_first_utm_term")
+    },
+
+    last: {
+      seen_at: getLS("meta_last_seen_at"),
+      fbclid: getLS("meta_last_fbclid"),
+      utm_source: getLS("meta_last_utm_source"),
+      utm_medium: getLS("meta_last_utm_medium"),
+      utm_campaign: getLS("meta_last_utm_campaign"),
+      utm_adset: getLS("meta_last_utm_adset"),
+      utm_content: getLS("meta_last_utm_content"),
+      utm_term: getLS("meta_last_utm_term")
+    }
+  });
+})();
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("pay script loaded");
+
+  const API_URL = "https://bayer-1078313683185.europe-west1.run.app";
+  const buttons = document.querySelectorAll(".pay-btn");
+
+  console.log("buttons found:", buttons.length);
+
+  if (!buttons.length) return;
+
+  function uuidv4() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function getLS(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", async function (e) {
+      console.log("button clicked", btn.dataset.productId);
+      e.preventDefault();
+
+      const eventId = uuidv4();
+
+      const payload = {
+        event_id: eventId,
+        landing_id: window.APP_CONFIG?.landing_id || null,
+        pixel_key: window.APP_CONFIG?.pixel_key || null,
+        product_id: btn.dataset.productId,
+        attribution: {
+          external_id: getLS("meta_external_id"),
+          fbp: getLS("meta_fbp"),
+
+          fbclid: getLS("meta_last_fbclid") || getLS("meta_first_fbclid"),
+          utm_source: getLS("meta_last_utm_source") || getLS("meta_first_utm_source"),
+          utm_medium: getLS("meta_last_utm_medium") || getLS("meta_first_utm_medium"),
+          utm_campaign: getLS("meta_last_utm_campaign") || getLS("meta_first_utm_campaign"),
+          utm_adset: getLS("meta_last_utm_adset") || getLS("meta_first_utm_adset"),
+          utm_content: getLS("meta_last_utm_content") || getLS("meta_first_utm_content"),
+          utm_term: getLS("meta_last_utm_term") || getLS("meta_first_utm_term"),
+
+          first_seen_at: getLS("meta_first_seen_at")
+        }
+      };
+
+      console.log("PAYLOAD TO API:", payload);
+
+      try {
+        btn.style.pointerEvents = "none";
+        btn.style.opacity = "0.7";
+
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        console.log("response status:", res.status);
+
+        const data = await res.json();
+        console.log("response data:", data);
+
+        if (!res.ok || !data.ok || !data.payment) {
+          throw new Error(data.error || "Не вдалося створити оплату");
+        }
+
+        const payment = data.payment;
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://secure.wayforpay.com/pay";
+
+        Object.keys(payment).forEach(function (key) {
+          const value = payment[key];
+
+          if (Array.isArray(value)) {
+            value.forEach(function (item) {
+              const input = document.createElement("input");
+              input.type = "hidden";
+              input.name = key + "[]";
+              input.value = item;
+              form.appendChild(input);
+            });
+          } else {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+          }
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+
+      } catch (error) {
+        console.error("Помилка create-order/payment:", error);
+        btn.style.pointerEvents = "";
+        btn.style.opacity = "";
+        alert("Не вдалося створити оплату. Спробуй ще раз.");
+      }
+    });
+  });
+});
+</script>
 </head>
 <body data-landing="foot">
   <!-- Google Tag Manager (noscript) -->
@@ -78,10 +329,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="bs-countdown__label">с</span>
           </div>
     </div>
-    <a id="main-cta" class="btn btn--primary" href="https://secure.wayforpay.com/button/bc71398b96be6">
+    <button id="main-cta" class="btn btn--primary pay-btn" data-product-id="foot_370" type="button">
       <span class="">Приєднатись</span>
       <span class="btn-fixed__discount">-85%</span>
-    </a>
+    </button>
     <p class="spots">Залишилось <span data-spots></span> місць за акцією</p>
   </section>
   <section class="bs-forwho section">
@@ -113,7 +364,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p class="forwho__text">Мазі, уколи та устілки не дали результату — час спробувати інший підхід.</p>
         </div>
         <p class="forwho__alert">❗ Якщо нічого не робити, біль може стати хронічним</p>
-        <a href="https://secure.wayforpay.com/button/bc71398b96be6" class="btn btn--primary">Почати відновлення сьогодні</a>
+        <button class="btn btn--primary pay-btn" data-product-id="foot_370" type="button">Почати відновлення сьогодні</button>
 
       </div>
     </div>
@@ -167,7 +418,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       </ul>
       <p class="results__proof">💡 90% учасників відчули перше полегшення вже на 1 тижні</p>
-      <a href="https://secure.wayforpay.com/button/bc71398b96be6" class="btn btn--primary">Хочу такі результати →</a>
+      <button class="btn btn--primary pay-btn" data-product-id="foot_370" type="button">Хочу такі результати →</button>
     </div>
   </section>
   <section class="bs-inside section section--pattern section--accent-edge">
@@ -275,7 +526,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <!-- CTA у брендовому кольорі -->
       <div class="is-cta">
-        <a href="https://secure.wayforpay.com/button/bc71398b96be6" class="btn btn--primary">До курсу • 370 грн</a>
+        <button class="btn btn--primary pay-btn" data-product-id="foot_370" type="button"">До курсу • 370 грн</a>
       </div>
 
     </div>
@@ -363,9 +614,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
 
         <!-- Кнопка -->
-        <a id="main-cta" class="btn btn--primary bs-pricing__cta" href="https://secure.wayforpay.com/button/bc71398b96be6">
+        <button id="main-cta"  class="btn btn--primary bs-pricing__cta pay-btn"  data-product-id="foot_370" type="button">
           До курсу • 370 грн
-        </a>
+        </button>
         <p class="spots spots--price">Залишилось <span data-spots></span> місць</p>
       </div>
     </div>
@@ -560,7 +811,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             * Повернення діє протягом 14 днів із моменту старту курсу. Мета — зняти ризик і допомогти тобі спокійно розпочати.
           </p>
 
-          <a class="btn btn--primary bs-trust__cta" href="https://secure.wayforpay.com/button/bc71398b96be6">До курсу • 370 грн</a>
+          <button class="btn btn--primary bs-trust__cta pay-btn" data-product-id="foot_370" type="button">До курсу • 370 грн</button>
         </div>
       </div>
     </div>
@@ -625,10 +876,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <footer class="footer">© Bogdan Rehab</footer>
 <div class="bs-toasts" aria-live="polite" aria-atomic="true"></div>
 <!-- STICKY CTA (внизу екрана) -->
-<a class="bs-sticky-cta" href="https://secure.wayforpay.com/button/bc71398b96be6" aria-label="Перейти до курсу">
+<button class="bs-sticky-cta pay-btn" data-product-id="foot_370" type="button" taria-label="Перейти до курсу">
   Приєднатись зараз за 370 грн
-</a>
+</button>
 <script src="../shared/js/base.js"></script>
 <script src="./foot.js"></script>
+
+
 </body>
 </html>
