@@ -1,289 +1,674 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Курс для шиї та плечей</title>
-  <meta name="description" content="Мобільний лендінг для курсу зі зменшення болю в шиї та плечах за 10–15 хвилин на день." />
+  <title>Курс для шиї, плечей та міжлопаткової зони</title>
+  <meta
+    name="description"
+    content="6-денний онлайн-курс для тих, хто багато сидить: щодня нове відео 10–15 хвилин у Telegram, щоб зменшити напруження в шиї, плечах і між лопатками."
+  />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+  window.APP_CONFIG = {
+    landing_id: "neck",
+    pixel_key: "pixel_neck"
+  };
+</script>
+
+<script>
+(function () {
+  function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  }
+
+  function uuidv4() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function getLS(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setLS(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {}
+  }
+
+  function saveIfExists(key, value) {
+    if (value !== null && value !== undefined && value !== "") {
+      setLS(key, value);
+    }
+  }
+
+  function ensureExternalId() {
+    let id = getLS("meta_external_id");
+    if (!id) {
+      id = uuidv4();
+      setLS("meta_external_id", id);
+    }
+    return id;
+  }
+
+  const utm = {
+    utm_source: getParam("utm_source"),
+    utm_medium: getParam("utm_medium"),
+    utm_campaign: getParam("utm_campaign"),
+    utm_adset: getParam("utm_adset"),
+    utm_content: getParam("utm_content"),
+    utm_term: getParam("utm_term")
+  };
+
+  const fbclid = getParam("fbclid");
+  const fbp = getCookie("_fbp");
+  const nowTs = String(Math.floor(Date.now() / 1000));
+
+  ensureExternalId();
+  saveIfExists("meta_fbp", fbp);
+
+  const hasAttributionInUrl =
+    Object.values(utm).some(Boolean) || !!fbclid;
+
+  // FIRST TOUCH
+  if (!getLS("meta_first_seen_at") && hasAttributionInUrl) {
+    setLS("meta_first_seen_at", nowTs);
+
+    saveIfExists("meta_first_utm_source", utm.utm_source);
+    saveIfExists("meta_first_utm_medium", utm.utm_medium);
+    saveIfExists("meta_first_utm_campaign", utm.utm_campaign);
+    saveIfExists("meta_first_utm_adset", utm.utm_adset);
+    saveIfExists("meta_first_utm_content", utm.utm_content);
+    saveIfExists("meta_first_utm_term", utm.utm_term);
+    saveIfExists("meta_first_fbclid", fbclid);
+  }
+
+  // Якщо first_seen_at ще нема взагалі — створи хоча б базовий timestamp
+  if (!getLS("meta_first_seen_at")) {
+    setLS("meta_first_seen_at", nowTs);
+  }
+
+  // LAST TOUCH
+  if (hasAttributionInUrl) {
+    setLS("meta_last_seen_at", nowTs);
+
+    saveIfExists("meta_last_utm_source", utm.utm_source);
+    saveIfExists("meta_last_utm_medium", utm.utm_medium);
+    saveIfExists("meta_last_utm_campaign", utm.utm_campaign);
+    saveIfExists("meta_last_utm_adset", utm.utm_adset);
+    saveIfExists("meta_last_utm_content", utm.utm_content);
+    saveIfExists("meta_last_utm_term", utm.utm_term);
+    saveIfExists("meta_last_fbclid", fbclid);
+  }
+
+  console.log("ATTR INIT", {
+    external_id: getLS("meta_external_id"),
+    fbp: getLS("meta_fbp"),
+
+    first: {
+      seen_at: getLS("meta_first_seen_at"),
+      fbclid: getLS("meta_first_fbclid"),
+      utm_source: getLS("meta_first_utm_source"),
+      utm_medium: getLS("meta_first_utm_medium"),
+      utm_campaign: getLS("meta_first_utm_campaign"),
+      utm_adset: getLS("meta_first_utm_adset"),
+      utm_content: getLS("meta_first_utm_content"),
+      utm_term: getLS("meta_first_utm_term")
+    },
+
+    last: {
+      seen_at: getLS("meta_last_seen_at"),
+      fbclid: getLS("meta_last_fbclid"),
+      utm_source: getLS("meta_last_utm_source"),
+      utm_medium: getLS("meta_last_utm_medium"),
+      utm_campaign: getLS("meta_last_utm_campaign"),
+      utm_adset: getLS("meta_last_utm_adset"),
+      utm_content: getLS("meta_last_utm_content"),
+      utm_term: getLS("meta_last_utm_term")
+    }
+  });
+})();
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const API_URL = "https://bayer-1078313683185.europe-west1.run.app";
+  const buttons = document.querySelectorAll(".pay-btn");
+
+  if (!buttons.length) return;
+
+  function uuidv4() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function getLS(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", async function (e) {
+      e.preventDefault();
+
+      const originalText = btn.textContent;
+      const eventId = uuidv4();
+
+      const payload = {
+        event_id: eventId,
+        landing_id: window.APP_CONFIG?.landing_id || null,
+        pixel_key: window.APP_CONFIG?.pixel_key || null,
+        product_id: btn.dataset.productId,
+        attribution: {
+          external_id: getLS("meta_external_id"),
+          fbp: getLS("meta_fbp"),
+
+          fbclid: getLS("meta_last_fbclid") || getLS("meta_first_fbclid"),
+          utm_source: getLS("meta_last_utm_source") || getLS("meta_first_utm_source"),
+          utm_medium: getLS("meta_last_utm_medium") || getLS("meta_first_utm_medium"),
+          utm_campaign: getLS("meta_last_utm_campaign") || getLS("meta_first_utm_campaign"),
+          utm_adset: getLS("meta_last_utm_adset") || getLS("meta_first_utm_adset"),
+          utm_content: getLS("meta_last_utm_content") || getLS("meta_first_utm_content"),
+          utm_term: getLS("meta_last_utm_term") || getLS("meta_first_utm_term"),
+
+          first_seen_at: getLS("meta_first_seen_at")
+        }
+      };
+
+      console.log("PAYLOAD TO API:", payload);
+
+      try {
+        btn.textContent = "Формуємо платіж...";
+        btn.disabled = true;
+        btn.classList.add("is-loading");
+        btn.style.pointerEvents = "none";
+
+        const startedAt = Date.now();
+
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        console.log("create-order ms:", Date.now() - startedAt);
+        console.log("response status:", res.status);
+
+        const data = await res.json();
+        console.log("response data:", data);
+
+        if (!res.ok || !data.ok || !data.payment) {
+          throw new Error(data.error || "Не вдалося створити оплату");
+        }
+
+        const payment = data.payment;
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://secure.wayforpay.com/pay";
+
+        Object.keys(payment).forEach(function (key) {
+          const value = payment[key];
+
+          if (Array.isArray(value)) {
+            value.forEach(function (item) {
+              const input = document.createElement("input");
+              input.type = "hidden";
+              input.name = key + "[]";
+              input.value = item;
+              form.appendChild(input);
+            });
+          } else {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+          }
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+
+      } catch (error) {
+        console.error("Помилка create-order/payment:", error);
+        btn.textContent = originalText;
+        btn.disabled = false;
+        btn.classList.remove("is-loading");
+        btn.style.pointerEvents = "";
+        alert("Не вдалося створити оплату. Спробуй ще раз.");
+      }
+    });
+  });
+});
+</script>
 </head>
 <body>
-  <div class="page-bg page-bg--hero"></div>
-  <div class="page-bg page-bg--accent"></div>
+  <div class="page-bg">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+  </div>
 
   <main class="page">
-    <section class="section hero">
+    <section class="section hero reveal">
       <div class="container">
-        <div class="eyebrow">Онлайн-курс для тих, хто багато сидить</div>
-        <h1>Позбудься болю в шиї та плечах всього за <span>10–15 хвилин</span> на день</h1>
-        <p class="lead">Без тренажерів, без спортзалу — просто сидячи на стільці навіть під час роботи.</p>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          Онлайн-курс для тих, хто багато сидить
+        </div>
 
-        <ul class="benefits-list">
-          <li><span class="icon">✓</span><span>Зменшення напруження вже з перших днів</span></li>
-          <li><span class="icon">✓</span><span>Підходить для роботи за комп’ютером і телефоном</span></li>
-          <li><span class="icon">✓</span><span>Прості вправи з чіткими поясненнями</span></li>
-        </ul>
+        <h1 class="hero-title">
+          Зменш напруження в
+          <span class="text-accent underline-wave">шиї, плечах і між лопатками</span>
+          за 10–15 хвилин на день
+        </h1>
 
-        <a class="btn btn--primary btn--full" href="#pricing">Почати курс за 390 грн</a>
+        <p class="hero-text">
+          6-денний курс для тих, у кого після ноутбука, телефону або керма шия стає «кам’яною»,
+          плечі затискає, а у верхній частині спини накопичується важкість.
+        </p>
 
-        <div class="hero-card media-frame">
-          <img src="https://images.unsplash.com/photo-1765648636080-1d85e79fc8ae?auto=format&fit=crop&q=80&w=1080" alt="Жінка працює за ноутбуком" />
-          <div class="media-overlay"></div>
-          <div class="social-proof">
-            <div class="stars">
-              <span>★</span><span>★</span><span>★</span>
-            </div>
-            <div>Вже допомогло <strong>1,000+</strong> людям</div>
+        <div class="hero-timer card-soft">
+          <div>
+            <div class="timer-label">Спеціальна ціна 390 грн діє ще</div>
+          </div>
+          <div class="timer-grid" id="countdown" aria-label="Зворотний відлік">
+            <div class="timer-box"><strong id="timerHours">02</strong><span>год</span></div>
+            <div class="timer-separator">:</div>
+            <div class="timer-box"><strong id="timerMinutes">15</strong><span>хв</span></div>
+            <div class="timer-separator">:</div>
+            <div class="timer-box"><strong id="timerSeconds">00</strong><span>сек</span></div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="section section--white">
-      <div class="container">
-        <div class="section-head section-head--center">
-          <h2>Чому з’являється біль</h2>
-          <p>Якщо ти багато сидиш за комп’ютером, у телефоні або за кермом — м’язи шиї, плечей і між лопатками постійно перенапружені.</p>
-        </div>
+        <ul class="check-list">
+          <li><span class="check-icon">✓</span><span>Без спортзалу і без складних вправ</span></li>
+          <li><span class="check-icon">✓</span><span>Підійде для дому, офісу і перерв у роботі</span></li>
+          <li><span class="check-icon">✓</span><span>Бонус: урок із самомасажу при головному болю напруги</span></li>
+        </ul>
 
-        <div class="grid-cards grid-cards--2">
-          <article class="image-card">
-            <div class="image-card__media"><img src="https://images.unsplash.com/photo-1643237131522-bbf79b062ca1?auto=format&fit=crop&q=80&w=600" alt="Скутість рухів"></div>
-            <div class="image-card__body"><h3>Скутість рухів</h3><p>Постійне відчуття «дерев'яної» шиї</p></div>
-          </article>
-          <article class="image-card">
-            <div class="image-card__media"><img src="https://images.unsplash.com/photo-1633508775439-d517aa17ac4e?auto=format&fit=crop&q=80&w=600" alt="Головні болі напруги"></div>
-            <div class="image-card__body"><h3>Головні болі напруги</h3><p>Біль, що піднімається від потилиці</p></div>
-          </article>
-          <article class="image-card">
-            <div class="image-card__media"><img src="https://images.unsplash.com/photo-1615997380705-504484cd99c4?auto=format&fit=crop&q=80&w=600" alt="Горб у шиї"></div>
-            <div class="image-card__body"><h3>«Горб» у шиї</h3><p>Випинання в зоні сьомого хребця</p></div>
-          </article>
-          <article class="image-card">
-            <div class="image-card__media"><img src="https://images.unsplash.com/photo-1768507423533-b87b62769758?auto=format&fit=crop&q=80&w=600" alt="Біль між лопатками"></div>
-            <div class="image-card__body"><h3>Біль між лопатками</h3><p>Печіння і дискомфорт у спині</p></div>
-          </article>
-        </div>
-      </div>
-    </section>
+        <button class="btn btn-dark btn-lg  pay-btn" type="button" data-product-id="neck_390" >Отримати доступ за 390 грн <span>→</span></button>
 
-    <section class="section">
-      <div class="container">
-        <div class="section-head section-head--center">
-          <h2>Чому масаж і вправи з YouTube не працюють</h2>
-          <p>Більшість людей отримують лише тимчасове полегшення. Причина — м’язи не відновлюють баланс і стабільність.</p>
-        </div>
+        <div class="hero-media card-soft">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1200" alt="Робота за ноутбуком і напруження в шиї" />
+          <div class="hero-overlay"></div>
 
-        <div class="highlight-card">
-          <div class="highlight-card__badge">Фокус</div>
-          <p>«Проблема не в болю — а в порушенні роботи м’язів»</p>
+          <div class="stats-card">
+            <div class="avatars">
+              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100" alt="Учасниця курсу" />
+              <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=100&h=100" alt="Учасник курсу" />
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100" alt="Учасниця курсу" />
+            </div>
+            <div class="stats-text">Уже проходять курс<br><strong>1000+</strong> людей</div>
+          </div>
+
+          <!-- <div class="hero-float card-soft">
+            <strong>1 нове відео щодня</strong>
+            <span>щоб не відкладати і пройти курс до кінця</span>
+          </div> -->
         </div>
       </div>
     </section>
 
-    <section class="section section--white section--bordered">
+    <section class="section reveal">
       <div class="container">
-        <div class="section-head section-head--center">
-          <div class="section-icon">✦</div>
-          <h2>Просте рішення — 6-денний курс</h2>
-          <p>Це система вправ, яка поступово:</p>
+        <div class="section-head left">
+          <div class="eyebrow-wrap">
+            <span class="eyebrow-line"></span>
+            <span class="eyebrow">Впізнаєш себе?</span>
+          </div>
+          <h2>Це той самий дискомфорт, який повертається майже щодня</h2>
+          <p>Зазвичай він не виглядає як щось «серйозне», але постійно фоном заважає працювати, відпочивати й нормально розслаблятись.</p>
         </div>
 
-        <div class="stack-cards">
-          <article class="feature-card"><div class="feature-card__icon">✓</div><div><h3>Знімає напруження</h3><p>Розслаблення спазмованих м'язів</p></div></article>
-          <article class="feature-card"><div class="feature-card__icon">✓</div><div><h3>Активує слабкі м’язи</h3><p>Включення стабілізаторів у роботу</p></div></article>
-          <article class="feature-card"><div class="feature-card__icon">✓</div><div><h3>Відновлює рух</h3><p>Повернення повної амплітуди без болю</p></div></article>
+        <div class="stack gap-md">
+          <article class="mini-card">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=600" alt="Кам'яна шия до вечора">
+            <div>
+              <h3>Шия стає «кам’яною» до вечора</h3>
+              <p>Хочеться постійно її тягнути, крутити або розминати руками.</p>
+            </div>
+          </article>
+          <article class="mini-card">
+            <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600" alt="Напруження між лопатками">
+            <div>
+              <h3>Тягне між лопатками і плечі ніби затиснуті</h3>
+              <p>Після ноутбука чи телефона верхня частина спини відчувається важкою.</p>
+            </div>
+          </article>
+          <article class="mini-card">
+            <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&q=80&w=600" alt="Головний біль напруги">
+            <div>
+              <h3>З’являється головний біль напруги</h3>
+              <p>Напруження ніби піднімається від шиї до потилиці й заважає зосередитися.</p>
+            </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section reveal compact-top">
       <div class="container">
-        <div class="section-head section-head--center">
+        <div class="dark-highlight">
+          <div class="tag-dark">Суть проблеми</div>
+          <h2>Чому напруження <span class="text-accent-light">повертається знову?</span></h2>
+          <p>Бо сидяча поза, ноутбук, телефон і кермо повторюються щодня. Разова розминка або масаж можуть дати полегшення, але якщо немає короткої послідовної системи, тіло швидко повертається до того ж стану.</p>
+          <div class="quote-box">«Проблема часто не в одному дні — а в тому, що напруження накопичується щодня»</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Чим цей курс кращий за випадкові вправи з YouTube</h2>
+          <p>Тут не потрібно шукати, що робити сьогодні і в якій послідовності.</p>
+        </div>
+
+        <div class="compare-grid">
+          <article class="compare-card muted">
+            <div class="compare-label">Зазвичай буває так</div>
+            <h3>Хаотичні розминки та масаж</h3>
+            <ul class="bullet-list">
+              <li>полегшують ненадовго</li>
+              <li>немає чіткої послідовності</li>
+              <li>легко кинути через 2–3 дні</li>
+              <li>потрібно щоразу шукати щось нове</li>
+            </ul>
+          </article>
+
+          <article class="compare-card accent">
+            <div class="compare-label">У цьому курсі</div>
+            <h3>Коротка система на 6 днів</h3>
+            <ul class="bullet-list light">
+              <li>щодня приходить одне нове відео як нагадування</li>
+              <li>кожне заняття вже продумане по порядку</li>
+              <li>10–15 хвилин, щоб реально пройти курс до кінця</li>
+              <li>відкрив і повторюєш за мною без зайвих рішень</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Що дає <span class="text-accent">6-денний курс</span></h2>
+          <p>Це простий формат для тих, хто хоче почати без болісного входу й без довгих тренувань.</p>
+        </div>
+
+        <div class="stack gap-sm">
+          <article class="feature-row">
+            <div class="feature-icon">🪶</div>
+            <div>
+              <h3>Допомагає зменшити щоденне напруження</h3>
+              <p>Щоб шия, плечі та верх спини менше «забивалися» до вечора.</p>
+            </div>
+          </article>
+          <article class="feature-row">
+            <div class="feature-icon">🪑</div>
+            <div>
+              <h3>Підходить саме для сидячого дня</h3>
+              <p>Усе виконується на стільці, без килимка, інвентарю та окремої підготовки.</p>
+            </div>
+          </article>
+          <article class="feature-row">
+            <div class="feature-icon">📩</div>
+            <div>
+              <h3>Створює ритм, а не хаос</h3>
+              <p>Одне нове відео щодня приходить у Telegram і м’яко веде тебе по курсу.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark reveal">
+      <div class="container">
+        <div class="section-head left light">
           <h2>Як проходить курс</h2>
+          <p>Проста схема без зайвої теорії: відкриваєш, вмикаєш і повторюєш.</p>
         </div>
 
         <div class="steps">
-          <article class="step-card"><div class="step-number">1</div><div><h3>Оплачуєш курс</h3><p>Швидко та безпечно через платіжну систему</p></div></article>
-          <article class="step-card"><div class="step-number">2</div><div><h3>Отримуєш доступ у Telegram</h3><p>Зручний бот з усіма матеріалами</p></div></article>
-          <article class="step-card"><div class="step-number">3</div><div><h3>Щодня отримуєш відео</h3><p>Короткі, зрозумілі уроки</p></div></article>
-          <article class="step-card"><div class="step-number">4</div><div><h3>Відкриваєш і виконуєш</h3><p>Просто сидячи на робочому місці</p></div></article>
+          <div class="step-item"><span>01</span><div><h3>Оплачуєш курс</h3><p>Швидко та безпечно через платіжну систему.</p></div></div>
+          <div class="step-item"><span>02</span><div><h3>Отримуєш доступ у Telegram</h3><p>Одразу після оплати бот відкриває курс і супровід.</p></div></div>
+          <div class="step-item"><span>03</span><div><h3>Щодня отримуєш одне нове відео</h3><p>Це допомагає не відкладати і проходити курс послідовно день за днем.</p></div></div>
+          <div class="step-item"><span>04</span><div><h3>Вмикаєш і повторюєш за мною 10–15 хвилин</h3><p>Без складних вправ, без залу, просто сидячи на стільці.</p></div></div>
+        </div>
+
+        <h3 class="included-title">Що входить у доступ</h3>
+        <div class="included-grid">
+          <div class="glass-card"><span>🎬</span><strong>6 відео по 10–15 хвилин</strong></div>
+          <div class="glass-card"><span>📆</span><strong>1 нове відео щодня</strong></div>
+          <div class="glass-card"><span>💆</span><strong>Бонус: самомасаж при головному болю напруги</strong></div>
+          <div class="glass-card"><span>♾️</span><strong>Після відкриття матеріали лишаються назавжди</strong></div>
         </div>
       </div>
     </section>
 
-    <section class="section section--dark">
+    <section class="section reveal">
       <div class="container">
-        <div class="section-head section-head--center section-head--light">
-          <h2>Що входить у курс</h2>
-        </div>
-
-        <div class="grid-cards grid-cards--2 grid-cards--glass">
-          <article class="glass-card"><span>▶</span><strong>6 днів відео</strong></article>
-          <article class="glass-card"><span>⏱</span><strong>10–15 хвилин</strong></article>
-          <article class="glass-card"><span>🪑</span><strong>Вправи на стільці</strong></article>
-          <article class="glass-card"><span>🎁</span><strong>Бонус: самомасаж</strong></article>
-          <article class="glass-card glass-card--wide"><span>🔓</span><strong>Доступ назавжди</strong></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--white">
-      <div class="container">
-        <div class="section-head section-head--center">
-          <h2>Чому це працює</h2>
-        </div>
-
-        <div class="tick-grid">
-          <article><span>✓</span><div><h3>Поступове навантаження</h3><p>Без різких стрибків та перевантаження</p></div></article>
-          <article><span>✓</span><div><h3>Системний підхід</h3><p>Кожен день продовжує попередній</p></div></article>
-          <article><span>✓</span><div><h3>Активація глибоких м’язів</h3><p>Робота не лише з симптомом, а й з причиною</p></div></article>
-          <article><span>✓</span><div><h3>Практичність</h3><p>Вправи легко вбудувати в щоденний графік</p></div></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--white">
-      <div class="container">
-        <div class="section-head section-head--center">
+        <div class="section-head left">
           <h2>Для кого цей курс</h2>
+          <p>Формат підійде тим, хто хоче реальне рішення без складного старту.</p>
         </div>
 
-        <div class="audience-list">
-          <article class="overlay-card"><img src="https://images.unsplash.com/photo-1648109941110-d30f859426ea?auto=format&fit=crop&q=80&w=600" alt="Сидяча робота"><div><h3>Сидяча робота</h3></div></article>
-          <article class="overlay-card"><img src="https://images.unsplash.com/photo-1615997380705-504484cd99c4?auto=format&fit=crop&q=80&w=600" alt="Біль у шиї або плечах"><div><h3>Біль у шиї або плечах</h3></div></article>
-          <article class="overlay-card"><img src="https://images.unsplash.com/photo-1763210072123-d2c9010cf82a?auto=format&fit=crop&q=80&w=600" alt="Головні болі"><div><h3>Головні болі</h3></div></article>
-          <article class="overlay-card"><img src="https://images.unsplash.com/photo-1769028422208-34eaaddcea6e?auto=format&fit=crop&q=80&w=600" alt="Напруження у верхній спині"><div><h3>Напруження у верхній спині</h3></div></article>
+        <div class="stack gap-md">
+          <article class="image-card large">
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800" alt="Сидяча робота за ноутбуком">
+            <div class="image-card-overlay"></div>
+            <div class="image-card-content"><div class="icon-badge">💻</div><h3>Багато сидиш за ноутбуком</h3><p>Після 6–8+ годин за екраном шия і плечі напружуються майже щодня.</p></div>
+          </article>
+          <article class="image-card large">
+            <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&q=80&w=800" alt="Робота в телефоні">
+            <div class="image-card-overlay"></div>
+            <div class="image-card-content"><div class="icon-badge">📱</div><h3>Часто працюєш у телефоні</h3><p>Наприкінці дня з’являється важкість у шиї та між лопатками.</p></div>
+          </article>
+          <article class="image-card large">
+            <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=800" alt="Робота за кермом">
+            <div class="image-card-overlay"></div>
+            <div class="image-card-content"><div class="icon-badge">🚗</div><h3>Багато часу проводиш за кермом</h3><p>Статична поза накопичує затиснення у шиї, плечах і верхній частині спини.</p></div>
+          </article>
+        </div>
+
+        <div class="notice-card card-soft">
+          <h3>Коли цей курс краще не брати без додаткової консультації</h3>
+          <p>Якщо є різко сильний біль, виражене оніміння або слабкість у руці, нещодавня травма чи симптоми, які тебе лякають, краще спочатку звернутися на індивідуальну консультацію.</p>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section reveal compact-top">
       <div class="container">
-        <div class="section-head section-head--center">
-          <h2>Результат</h2>
-          <p>Що зміниться після проходження курсу?</p>
+        <div class="section-head left">
+          <div class="tag-light">Результат</div>
+          <h2>Що може змінитися у <span class="text-gradient">повсякденному житті</span></h2>
+          <p>Без гучних обіцянок — просто ті зміни, які люди найчастіше відзначають після регулярного проходження.</p>
         </div>
 
-        <div class="result-list">
-          <article class="result-card"><img src="https://images.unsplash.com/photo-1581159186721-b68b78da4ec9?auto=format&fit=crop&q=80&w=400" alt="Менше болю"><div><h3>Менше болю</h3><p>Зникне постійний ниючий дискомфорт</p></div></article>
-          <article class="result-card"><img src="https://images.unsplash.com/photo-1717195313721-b9bb0addd7be?auto=format&fit=crop&q=80&w=400" alt="Легкість у шиї"><div><h3>Легкість у шиї</h3><p>Відновиться вільна амплітуда рухів</p></div></article>
-          <article class="result-card"><img src="https://images.unsplash.com/photo-1734873475054-2e12238f8461?auto=format&fit=crop&q=80&w=400" alt="Краща постава"><div><h3>Краща постава</h3><p>Плечі розправляться природним шляхом</p></div></article>
-          <article class="result-card"><img src="https://images.unsplash.com/photo-1643183456037-bfc6e4af5a80?auto=format&fit=crop&q=80&w=400" alt="Менше головного болю"><div><h3>Менше головного болю</h3><p>Зникне напруга від потилиці до скронь</p></div></article>
+        <div class="stack gap-md">
+          <article class="result-card">
+            <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&q=80&w=800" alt="Менше фонового напруження">
+            <div class="result-content"><span class="chip">Щоденний комфорт</span><h3>Менше фонового напруження до вечора</h3><p>Шия, плечі та міжлопаткова зона не так швидко «забиваються» протягом дня.</p><small>✓ Те, що люди найчастіше відзначають у відгуках</small></div>
+          </article>
+          <article class="result-card">
+            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800" alt="Легше працювати сидячи">
+            <div class="result-content"><span class="chip">Робочий день</span><h3>Сидячий день переноситься легше</h3><p>Менше потреби постійно розминати шию, тягнути плечі чи міняти позу кожні 5 хвилин.</p><small>✓ Особливо цінно для тих, хто працює за комп’ютером</small></div>
+          </article>
+          <article class="result-card">
+            <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=800" alt="Більше легкості в рухах">
+            <div class="result-content"><span class="chip">Рухливість</span><h3>Більше легкості в рухах шиєю та плечима</h3><p>Рухи відчуваються вільнішими, а тіло менше стискається вгорі після сидячої роботи.</p><small>✓ Саме для цього побудована послідовність курсу</small></div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="section section--white section--bordered">
+    <section class="section reveal">
       <div class="container">
-        <div class="section-head section-head--center">
+        <div class="section-head center">
+          <h2>Що побачиш всередині</h2>
+          <p>Після оплати не потрібно нічого шукати — уся програма вже зібрана в Telegram.</p>
+        </div>
+
+        <div class="inside-grid">
+          <article class="inside-card card-soft">
+            <div class="inside-badge">День 1</div>
+            <h3>Старт без перевантаження</h3>
+            <p>Перше відео допомагає м’яко увійти в курс і зменшити накопичене напруження без різкого навантаження.</p>
+          </article>
+          <article class="inside-card card-soft">
+            <div class="inside-badge">Щодня</div>
+            <h3>Нове відео як нагадування</h3>
+            <p>Бот надсилає наступне заняття день за днем, щоб не випадати з ритму і не відкладати «на потім».</p>
+          </article>
+          <article class="inside-card card-soft">
+            <div class="inside-badge">Формат</div>
+            <h3>10–15 хвилин, вмикаєш і повторюєш</h3>
+            <p>Кожне відео — не уривок і не набір картинок, а повноцінне заняття, де ти просто рухаєшся разом зі мною.</p>
+          </article>
+          <article class="inside-card card-soft">
+            <div class="inside-badge">Бонус</div>
+            <h3>Самомасаж при головному болю напруги</h3>
+            <p>Окремий урок, який можна використати, коли напруження піднімається від шиї до потилиці.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal section-muted">
+      <div class="container">
+        <div class="section-head center">
           <h2>Хто автор</h2>
         </div>
 
         <article class="author-card">
-          <img src="https://images.unsplash.com/photo-1632054224659-280be3239aff?auto=format&fit=crop&q=80&w=400" alt="Богдан — фізичний терапевт">
-          <div class="author-card__content">
+          <img class="author-photo" src="https://images.unsplash.com/photo-1615109398623-88346a601842?auto=format&fit=crop&q=80&w=400" alt="Богдан — фізичний терапевт">
+          <div>
             <h3>Богдан</h3>
             <div class="author-badge">Фізичний терапевт</div>
-            <p>Я працюю з болем у спині, шиї та суглобах вже понад 5 років. Цей курс — вижимка найефективніших вправ, які допомагають моїм клієнтам позбутися болю без ліків та складних тренувань.</p>
+            <p>Я працюю з болем у спині, шиї та суглобах понад 5 років і бачу одну й ту саму проблему: люди або терплять напруження роками, або роблять хаотичні вправи, які не вбудовуються в життя. Тому я створив короткий формат, який реально пройти до кінця навіть під час робочого тижня.</p>
           </div>
         </article>
-      </div>
-    </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="section-head section-head--center">
+        <div class="section-head center mt-lg">
           <h2>Відгуки учасників</h2>
+          <p>Найкраще про формат говорять ті, хто вже спробував проходити його день за днем.</p>
         </div>
 
-        <div class="reviews">
+        <div class="stack gap-md">
           <article class="review-card">
-            <div class="review-stars">★★★★★</div>
-            <p>“Після тижня занять я нарешті перестала пити таблетки від головного болю. Дуже зручно, що можна робити прямо за робочим столом.”</p>
-            <div class="review-person"><strong>Олена, 34 роки</strong><span>Бухгалтер</span></div>
+            <div class="stars">★★★★★</div>
+            <p>“Мені зайшло саме те, що не треба було змушувати себе тренуватися годину. Щодня приходило одне відео, я просто відкривала Telegram і повторювала. Уже за кілька днів шия менше затискалась до вечора.”</p>
+            <div class="review-author"><span class="initial">О</span><div><strong>Олена, 34 роки</strong><small>Бухгалтер</small></div></div>
           </article>
           <article class="review-card">
-            <div class="review-stars">★★★★★</div>
-            <p>“Шия перестала хрустіти, а між лопатками зникло відчуття печіння наприкінці дня. Дякую Богдану за зрозумілі пояснення і дієві вправи.”</p>
-            <div class="review-person"><strong>Максим, 29 років</strong><span>Програміст</span></div>
-          </article>
-          <article class="review-card">
-            <div class="review-stars">★★★★★</div>
-            <p>“Ніколи не думала, що 15 хвилин на день можуть так змінити самопочуття. Тепер роблю вправи під час обідньої перерви.”</p>
-            <div class="review-person"><strong>Ірина, 41 рік</strong><span>Дизайнер</span></div>
+            <div class="stars">★★★★★</div>
+            <p>“Раніше то масаж, то випадкові ролики, але ефект був на день-два. Тут сподобалась послідовність: щодня нове заняття, все коротко і по ділу. Між лопатками реально стало легше.”</p>
+            <div class="review-author"><span class="initial">М</span><div><strong>Максим, 29 років</strong><small>Програміст</small></div></div>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section section--white section--bordered">
+    <section class="section reveal">
       <div class="container">
-        <div class="section-head section-head--center">
+        <div class="section-head center">
           <h2>Часті питання</h2>
         </div>
 
-        <div class="faq">
-          <article class="faq-item is-open">
-            <button class="faq-question" type="button">Чи потрібен додатковий інвентар?<span>⌄</span></button>
-            <div class="faq-answer"><p>Ні, вам не потрібно нічого купувати. Знадобиться лише стілець, на якому ви працюєте, та 10–15 хвилин вашого часу.</p></div>
+        <div class="faq-list">
+          <article class="faq-item active">
+            <button class="faq-question" type="button">Чи потрібен інвентар?<span>⌄</span></button>
+            <div class="faq-answer">Ні. Потрібен лише стілець і 10–15 хвилин часу. Усе побудовано так, щоб ти міг(могла) пройти заняття без залу, килимка чи тренажерів.</div>
           </article>
           <article class="faq-item">
-            <button class="faq-question" type="button">Як я отримаю доступ до курсу?<span>⌄</span></button>
-            <div class="faq-answer"><p>Відразу після оплати ви отримаєте посилання на закритий Telegram-бот. У ньому щодня відкриватимуться нові короткі відеоуроки.</p></div>
+            <button class="faq-question" type="button">Як я отримаю доступ?<span>⌄</span></button>
+            <div class="faq-answer">Одразу після оплати ти отримуєш доступ до Telegram-бота. Далі бот надсилає по одному новому відео щодня, щоб курс проходився послідовно, а не відклався на потім.</div>
           </article>
           <article class="faq-item">
-            <button class="faq-question" type="button">Чи підійде курс, якщо є грижа або протрузія?<span>⌄</span></button>
-            <div class="faq-answer"><p>Вправи підібрані так, щоб бути максимально безпечними для хребта. Якщо у вас є гострий біль, краще спочатку проконсультуватися з лікарем.</p></div>
+            <button class="faq-question" type="button">Це всі відео відкриваються одразу?<span>⌄</span></button>
+            <div class="faq-answer">Ні. Формат спеціально побудований так, щоб нове відео приходило щодня. Це працює як нагадування і допомагає пройти програму день за днем без хаосу.</div>
           </article>
           <article class="faq-item">
-            <button class="faq-question" type="button">Як довго матеріали будуть доступні?<span>⌄</span></button>
-            <div class="faq-answer"><p>Доступ до всіх відеоуроків та бонусів залишається у вас назавжди. Ви зможете повертатися до вправ у будь-який зручний час.</p></div>
+            <button class="faq-question" type="button">Яка тривалість кожного заняття?<span>⌄</span></button>
+            <div class="faq-answer">Кожне відео триває 10–15 хвилин. Це повноцінне заняття: ти просто вмикаєш його і повторюєш за мною.</div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-question" type="button">Що за бонус із самомасажем?<span>⌄</span></button>
+            <div class="faq-answer">Це окремий урок із самомасажу при головному болю напруги — коли відчуття затиснення піднімається від шиї до потилиці.</div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-question" type="button">Як довго матеріали доступні?<span>⌄</span></button>
+            <div class="faq-answer">Після того, як бот відкриє всі дні курсу, матеріали залишаються у тебе назавжди. Можна повертатися до них у будь-який момент.</div>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section pricing" id="pricing">
-      <div class="container">
-        <div class="section-head section-head--center">
-          <h2>Вартість</h2>
+    <section id="pricing" class="section pricing reveal">
+      <div class="pricing-bg blob-left"></div>
+      <div class="pricing-bg blob-right"></div>
+      <div class="container container-center">
+        <h2>Почни сьогодні</h2>
+        <p class="pricing-subtitle">Щоб уже цього тижня пройти перші заняття і не залишити проблему ще на один місяць «на потім».</p>
+
+        <div class="pricing-card-wrap">
+          <div class="pricing-badge">Найкраща пропозиція</div>
+          <div class="pricing-card">
+            <div class="price-row"><span class="price-main">390</span><span class="price-currency">грн</span></div>
+            <div class="price-note">Одноразово • Курс відкривається день за днем • Доступ залишається назавжди</div>
+
+            <ul class="price-list">
+              <li>✓ 6 відео по 10–15 хвилин</li>
+              <li>✓ 1 нове заняття щодня в Telegram</li>
+              <li>✓ Бонус: самомасаж при головному болю напруги</li>
+              <li>✓ Вправи на стільці без інвентарю</li>
+            </ul>
+
+            <button class="btn btn-accent btn-lg pay-btn" type="button" data-product-id="neck_390" >Придбати курс ↗</button>
+          </div>
         </div>
 
-        <article class="price-card">
-          <div class="price-badge">Найкраща ціна</div>
-          <div class="price"><strong>390</strong><span>грн</span></div>
-          <p class="price-note">Одноразово • доступ назавжди</p>
-
-          <ul class="price-list">
-            <li>6 днів відео-уроків</li>
-            <li>Бонусний урок з самомасажу</li>
-            <li>Підтримка в Telegram</li>
-            <li>Довічний доступ</li>
-          </ul>
-
-          <a class="btn btn--primary btn--full" href="#">Почати зараз</a>
-        </article>
-
-        <div class="final-cta">
-          <p>Почни сьогодні — і вже за кілька днів відчуй легкість у тілі</p>
-          <a class="btn btn--secondary btn--full" href="#">Почати курс</a>
-        </div>
+        <p class="pricing-bottom">Безпечна оплата через захищену платіжну систему. Доступ до бота прийде одразу після оплати.</p>
       </div>
     </section>
   </main>
 
   <div class="sticky-cta" id="stickyCta">
     <div>
-      <small>Доступ назавжди</small>
-      <strong>390 грн</strong>
+      <div class="sticky-label">6 днів • 1 нове відео щодня</div>
+      <div class="sticky-price">390 грн</div>
     </div>
-    <a class="btn btn--primary" href="#pricing">Почати</a>
+    <button class="btn btn-dark pay-btn" type="button" data-product-id="neck_390" >Почати</button>
   </div>
 
-  <script src="./script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
