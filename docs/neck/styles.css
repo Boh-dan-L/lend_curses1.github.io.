@@ -2125,11 +2125,29 @@ button { font: inherit; border: 0; cursor: pointer; }
 }
 
 .neck-hero-v2__desc {
+  position: relative;
+  z-index: 4;
+
   margin: 0;
+  padding: 12px 14px;
+
   color: #0b132b;
   font-size: 15px;
   line-height: 1.48;
+  font-weight: 500;
+
   max-width: 100%;
+
+  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
 .neck-hero-v2__visual {
@@ -2388,6 +2406,13 @@ button { font: inherit; border: 0; cursor: pointer; }
 
   .neck-hero-v2__desc {
     font-size: 14px;
+    line-height: 1.46;
+    padding: 11px 12px;
+    border-radius: 14px;
+  }
+
+  .neck-hero-v2__desc {
+    width: calc(100% + 42px);
   }
 
   .neck-hero-v2__visual {

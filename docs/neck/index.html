@@ -176,6 +176,32 @@ document.addEventListener("DOMContentLoaded", function () {
   const API_URL = "https://bayer-1078313683185.europe-west1.run.app";
   const buttons = document.querySelectorAll(".pay-btn");
 
+    // Пробуджуємо Cloud Run заздалегідь,
+  // щоб при натисканні "Купити" платіж формувався швидше.
+  function warmUpPaymentServer() {
+    fetch(API_URL + "/health", {
+      method: "GET",
+      cache: "no-store",
+      keepalive: true
+    }).catch(function () {
+      // Помилка warm-up не повинна впливати на сайт або оплату.
+    });
+  }
+
+  // Даємо сторінці спочатку завантажити основний контент,
+  // а потім будимо сервер.
+  setTimeout(warmUpPaymentServer, 800);
+
+  // Додатково будимо сервер, коли користувач наближається до покупки.
+  buttons.forEach(function (btn) {
+    ["pointerenter", "touchstart", "focus"].forEach(function (eventName) {
+      btn.addEventListener(eventName, warmUpPaymentServer, {
+        once: true,
+        passive: true
+      });
+    });
+  });
+
   if (!buttons.length) return;
 
   function uuidv4() {
@@ -328,11 +354,11 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="neck-hero-v2__top">
 <div class="neck-hero-v2__content">
 <h1 class="neck-hero-v2__title">
-            Шия та зона між лопатками «забиваються» після роботи?
+            Курс "Шия та лопатки"
             <span>10–15 хвилин вправ прямо на стільці</span>
 </h1>
 <p class="neck-hero-v2__desc">
-            Коротка програма для людей із сидячою роботою: відкриваєш заняття в Telegram,
+            Коротка програма для людей з дискоифортом в шиї та між лопаток: відкриваєш заняття в Telegram,
             залишаєшся біля робочого місця і виконуєш вправи без залу, килимка та довгого тренування.
           </p>
 </div>
@@ -359,6 +385,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <li>Усі заняття — лише 10–15 хвилин</li>
 <li>Усі вправи виконуються сидячи на стільці</li>
 <li>Мінімум інвентарю: стрічка, м’ячик і рушник або ремінь</li>
+<li>БОНУС: самомасаж при головних болях</li>
 </ul>
 <button class="neck-hero-v2__cta pay-btn" data-product-id="neck_390" type="button">
         Отримати доступ за 390 грн
@@ -611,25 +638,25 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="container">
 <div class="section-head left">
 <div class="tag-light">Що може змінитися</div>
-<h2>Не «на тренуванні», а у звичайному робочому дні</h2>
-<p>Мета програми — не просто виконати шість відео, а дати тобі короткий інструмент, який можна використовувати тоді, коли шия та верх спини найбільше цього потребують.</p>
+<h2>Яких змін можна очікувати від регулярних занять</h2>
+<p>Завдання програми — не просто “розім'яти шию” на 15 хвилин, а поступово покращити те, як шия, плечі та верх спини переносять твій звичайний робочий день.</p>
 </div>
 <div class="stack gap-md">
 <article class="result-card">
 <img alt="Комфорт наприкінці робочого дня" src="./img/IMG_4421.JPG"/>
-<div class="result-content"><span class="chip">До вечора</span><h3>Шия менше відволікає від роботи</h3><p>Після сидячого дня може бути менше відчуття скутості й потреби постійно крутити або розминати шию.</p><small>✓ Короткий формат, який можна повторювати протягом тижня</small></div>
+<div class="result-content"><span class="chip">До вечора</span><h3>Менше скутості та «затиснутості» під вечір</h3><p>Шия та зона між лопатками можуть менше нагадувати про себе після кількох годин роботи за комп'ютером.</p><small>✓ Менше бажання постійно крутити й розминати шию</small></div>
 </article>
 <article class="result-card">
 <img alt="Сидяча робота за комп’ютером" src="./img/IMG_4419.JPG"/>
-<div class="result-content"><span class="chip">Робочий день</span><h3>Легше додавати рух у сидячу роботу</h3><p>Замість чекати вечора, ти маєш готове 10–15-хвилинне заняття прямо біля робочого місця.</p><small>✓ Особливо зручно для тих, хто працює за комп’ютером</small></div>
+<div class="result-content"><span class="chip">Робочий день</span><h3>Менше дискомфорту в шиї та між лопатками</h3><p>Регулярний рух і робота м'язів допомагають краще переносити тривале сидіння протягом робочого дня.</p><small>✓ Не тільки короткочасне розслаблення, а регулярне навантаження</small></div>
 </article>
 <article class="result-card">
 <img alt="Рухливість шиї та плечей" src="./img/neckMob.jpg"/>
-<div class="result-content"><span class="chip">Рухливість</span><h3>Більше свободи у рухах шиєю та плечима</h3><p>Регулярна зміна положення та контрольовані рухи допомагають не проводити весь день в одному статичному режимі.</p><small>✓ Рухливість + робота для плечей і лопаток</small></div>
+<div class="result-content"><span class="chip">Рухливість</span><h3>Менше проявів головного болю напруги</h3><p>Якщо головний біль пов'язаний із перенапруженням шиї та плечового поясу, вправи й техніки самомасажу з бонусного уроку можуть допомогти зменшити його вираженість.</p><small>✓ Окремий бонусний урок із самомасажем і вправами</small></div>
 </article>
 <article class="result-card">
 <img alt="Положення плечей і верхньої частини спини" src="./img/posture.jpeg"/>
-<div class="result-content"><span class="chip">Контроль</span><h3>Менше залежності від команди «просто сиди рівно»</h3><p>Замість постійно контролювати поставу силою волі, ти додаєш рух і роботу для плечей, лопаток та верхньої частини спини.</p><small>✓ Практичні вправи замість нескінченного виправлення пози</small></div>
+<div class="result-content"><span class="chip">Контроль</span><h3>Кращий контроль постави та витривалість верхньої частини спини</h3><p>Плечам, лопаткам і м'язам шиї стає легше підтримувати робоче положення без постійної команди собі “сядь рівно”.</p><small>✓ Робота з плечима, лопатками та грудним відділом</small></div>
 </article>
 </div>
 </div>
