@@ -4,10 +4,10 @@
 */
 const LINKS = {
   consultation: 'https://bogdancourse.pro/consultation/',
-  knee: 'https://bogdan-rehab.wayforpay.link/',
-  foot: 'https://bogdan-rehab.wayforpay.link/',
-  neck: 'https://bogdan-rehab.wayforpay.link/',
-  back: 'https://bogdan-rehab.wayforpay.link/',
+  knee: 'https://bogdan92.pro/',
+  foot: 'https://bogdancourse.pro/foot/',
+  neck: 'https://bogdancourse.pro/neck/',
+  back: 'https://secure.wayforpay.com/payment/saad85c75bb73',
   telegram: 'https://t.me/Bogdanrehab',
   instagram: 'https://www.instagram.com/bogdan.rehab',
   facebook: 'https://www.facebook.com/Bogdan.rehab'
